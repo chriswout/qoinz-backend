@@ -3,7 +3,7 @@ const { ApiError } = require('./errorHandler');
 const { executeQuery, pool } = require('../config/database');
 
 // Verify JWT token
-const verifyToken = async (req, res, next) => {
+const authenticateToken = async (req, res, next) => {
     try {
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -114,7 +114,7 @@ async function checkBalance(requiredAmount) {
 }
 
 module.exports = {
-    verifyToken,
+    authenticateToken,
     checkRole,
     requireLevel,
     checkOwnership,
