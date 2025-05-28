@@ -6,8 +6,6 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "debug": "node --inspect=0.0.0.0:9229 src/index.js",
-    "debug:brk": "node --inspect-brk=0.0.0.0:9229 src/index.js",
     "test": "jest",
     "postinstall": "node -e \"try { require('fs').mkdirSync('./logs', { recursive: true }); } catch (e) {}\""
   },
@@ -23,7 +21,7 @@
     "helmet": "^7.1.0",
     "express-rate-limit": "^7.1.5",
     "morgan": "^1.10.0",
-    "geoip-lite": "^1.4.7"
+    "axios": "^1.6.7"
   },
   "devDependencies": {
     "nodemon": "^3.0.1",
