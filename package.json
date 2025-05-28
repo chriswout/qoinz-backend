@@ -6,6 +6,8 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
+    "debug": "node --inspect=0.0.0.0:9229 src/index.js",
+    "debug:brk": "node --inspect-brk=0.0.0.0:9229 src/index.js",
     "test": "jest",
     "postinstall": "node -e \"try { require('fs').mkdirSync('./logs', { recursive: true }); } catch (e) {}\""
   },
