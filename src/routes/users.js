@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const { pool } = require('../config/database');
-const { verifyToken } = require('../middleware/auth');
+const { authenticateToken } = require('../middleware/auth');
 const bcrypt = require('bcryptjs');
 const { logUserActivity } = require('../middleware/activityLogger');
 
 // Get user profile
-router.get('/profile', verifyToken, async (req, res) => {
+router.get('/profile', authenticateToken, async (req, res) => {
     try {
         const [users] = await pool.query(
             `SELECT 
@@ -30,7 +30,7 @@ router.get('/profile', verifyToken, async (req, res) => {
 });
 
 // Update user profile
-router.put('/profile', verifyToken, logUserActivity('update_profile'), async (req, res) => {
+router.put('/profile', authenticateToken, logUserActivity('update_profile'), async (req, res) => {
     try {
         const { 
             username, email, first_name, last_name, phone,
@@ -72,7 +72,7 @@ router.put('/profile', verifyToken, logUserActivity('update_profile'), async (re
 });
 
 // Get user statistics
-router.get('/stats', verifyToken, async (req, res) => {
+router.get('/stats', authenticateToken, async (req, res) => {
     try {
         const [stats] = await pool.query(
             `SELECT 
@@ -119,7 +119,7 @@ router.get('/stats', verifyToken, async (req, res) => {
 });
 
 // Get user's referral network
-router.get('/referral-network', verifyToken, async (req, res) => {
+router.get('/referral-network', authenticateToken, async (req, res) => {
     try {
         const [network] = await pool.query(
             `WITH RECURSIVE referral_tree AS (
@@ -153,7 +153,7 @@ router.get('/referral-network', verifyToken, async (req, res) => {
 });
 
 // Get user's branch performance
-router.get('/branch-performance', verifyToken, async (req, res) => {
+router.get('/branch-performance', authenticateToken, async (req, res) => {
     try {
         const [performance] = await pool.query(
             `SELECT 
@@ -180,7 +180,7 @@ router.get('/branch-performance', verifyToken, async (req, res) => {
 });
 
 // Change password endpoint
-router.post('/change-password', verifyToken, logUserActivity('change_password'), async (req, res) => {
+router.post('/change-password', authenticateToken, logUserActivity('change_password'), async (req, res) => {
     try {
         const { old_password, new_password } = req.body;
         if (!old_password || !new_password) {
