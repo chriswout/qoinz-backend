@@ -9,7 +9,7 @@ const logUserActivity = (action, details = null) => async (req, res, next) => {
         // Optionally, add geo lookup here for country/city/ISP
 
         await pool.query(
-            'INSERT INTO user_activity_log (user_id, action, ip, user_agent, details) VALUES (?, ?, ?, ?, ?)',
+            'INSERT INTO user_activity_logs (user_id, action, ip_address, user_agent, details) VALUES (?, ?, ?, ?, ?)',
             [userId, action, ip, userAgent, details ? JSON.stringify(details) : null]
         );
     } catch (err) {
