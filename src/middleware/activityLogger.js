@@ -3,7 +3,8 @@ const { pool } = require('../config/database');
 // Middleware to log user activity
 const logUserActivity = (action, details = null) => async (req, res, next) => {
     try {
-        const userId = req.user ? req.user.id : null;
+        // For unauthenticated actions (like login attempts), use system user ID (1)
+        const userId = req.user ? req.user.id : 1;
         const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
         const userAgent = req.headers['user-agent'] || '';
         // Optionally, add geo lookup here for country/city/ISP
