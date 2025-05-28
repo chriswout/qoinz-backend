@@ -1,0 +1,18 @@
+{
+  "appName": "qoinz-backend",
+  "hasPersistentData": false,
+  "instanceCount": 1,
+  "notifyOnFail": "none",
+  "containerHttpPort": "3000",
+  "description": "QOINZ Backend API",
+  "envVars": [
+    {
+      "key": "NODE_ENV",
+      "value": "production"
+    },
+    {
+      "key": "PORT",
+      "value": "3000"
+    }
+  ]
+} 

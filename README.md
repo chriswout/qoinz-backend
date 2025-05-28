@@ -1,1 +1,0 @@
-# qoinz-backend
