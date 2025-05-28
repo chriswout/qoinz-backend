@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { pool } = require('../config/database');
-const { verifyToken } = require('../middleware/auth');
+const { authenticateToken } = require('../middleware/auth');
 
 // Get user's achievements
-router.get('/', verifyToken, async (req, res) => {
+router.get('/', authenticateToken, async (req, res) => {
     try {
         const [achievements] = await pool.query(
             `SELECT a.*, 
@@ -23,7 +23,7 @@ router.get('/', verifyToken, async (req, res) => {
 });
 
 // Get achievement details
-router.get('/:id', verifyToken, async (req, res) => {
+router.get('/:id', authenticateToken, async (req, res) => {
     try {
         const [achievements] = await pool.query(
             `SELECT a.*, 
@@ -50,7 +50,7 @@ router.get('/:id', verifyToken, async (req, res) => {
 });
 
 // Claim achievement reward
-router.post('/:id/claim', verifyToken, async (req, res) => {
+router.post('/:id/claim', authenticateToken, async (req, res) => {
     try {
         // Start transaction
         await pool.query('START TRANSACTION');

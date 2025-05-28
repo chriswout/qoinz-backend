@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { pool } = require('../config/database');
-const { verifyToken } = require('../middleware/auth');
+const { authenticateToken } = require('../middleware/auth');
 
 // Get wallet balance and transactions
-router.get('/', verifyToken, async (req, res) => {
+router.get('/', authenticateToken, async (req, res) => {
     try {
         // Get user's Qoinz balance
         const [users] = await pool.query(
@@ -36,7 +36,7 @@ router.get('/', verifyToken, async (req, res) => {
 });
 
 // Get transaction history with pagination
-router.get('/transactions', verifyToken, async (req, res) => {
+router.get('/transactions', authenticateToken, async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 20;

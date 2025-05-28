@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const { pool } = require('../config/database');
-const { verifyToken } = require('../middleware/auth');
+const { authenticateToken } = require('../middleware/auth');
 const { checkAndHandleLevelUp } = require('../utils/leveling');
 const { handleAutoPlacement } = require('../utils/branchPlacement');
 const { logUserActivity } = require('../middleware/activityLogger');
 
 // Generate referral code
-router.post('/generate', verifyToken, async (req, res) => {
+router.post('/generate', authenticateToken, async (req, res) => {
     try {
         // Get user's current referrals count
         const [referrals] = await pool.query(
@@ -51,7 +51,7 @@ router.post('/generate', verifyToken, async (req, res) => {
 });
 
 // Get user's referrals
-router.get('/', verifyToken, async (req, res) => {
+router.get('/', authenticateToken, async (req, res) => {
     try {
         const [referrals] = await pool.query(
             `SELECT r.*, 
@@ -73,7 +73,7 @@ router.get('/', verifyToken, async (req, res) => {
 });
 
 // Create new referral
-router.post('/', verifyToken, logUserActivity('create_referral'), async (req, res) => {
+router.post('/', authenticateToken, logUserActivity('create_referral'), async (req, res) => {
     try {
         const { invitee_id, branch_id } = req.body;
 
@@ -292,7 +292,7 @@ router.post('/', verifyToken, logUserActivity('create_referral'), async (req, re
 });
 
 // Get referral details
-router.get('/:id', verifyToken, async (req, res) => {
+router.get('/:id', authenticateToken, async (req, res) => {
     try {
         const [referrals] = await pool.query(
             `SELECT r.*, 

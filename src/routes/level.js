@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { pool } = require('../config/database');
-const { verifyToken } = require('../middleware/auth');
+const { authenticateToken } = require('../middleware/auth');
 
 // Get user's level and experience
-router.get('/', verifyToken, async (req, res) => {
+router.get('/', authenticateToken, async (req, res) => {
     try {
         const [users] = await pool.query(
             'SELECT level, exp FROM users WHERE id = ?',
@@ -23,7 +23,7 @@ router.get('/', verifyToken, async (req, res) => {
 });
 
 // Add experience to user
-router.post('/exp', verifyToken, async (req, res) => {
+router.post('/exp', authenticateToken, async (req, res) => {
     try {
         const { amount } = req.body;
 
@@ -69,7 +69,7 @@ router.post('/exp', verifyToken, async (req, res) => {
 });
 
 // Get level requirements
-router.get('/requirements', verifyToken, async (req, res) => {
+router.get('/requirements', authenticateToken, async (req, res) => {
     try {
         const [users] = await pool.query(
             'SELECT level, exp FROM users WHERE id = ?',
