@@ -4,7 +4,41 @@ const { authenticateToken } = require('../middleware/auth');
 const { pool } = require('../config/database');
 const { logActivity } = require('../utils/activityLogger');
 
-// Get user activity logs
+// Get activity statistics (specific route)
+router.get('/stats', authenticateToken, async (req, res) => {
+  try {
+    const [stats] = await pool.query(`
+      SELECT 
+        COUNT(*) as total_actions,
+        COUNT(DISTINCT DATE(timestamp)) as active_days,
+        COUNT(DISTINCT action) as unique_actions,
+        MAX(timestamp) as last_activity
+      FROM user_activity_logs
+      WHERE user_id = ?
+    `, [req.user.id]);
+    
+    const [actionStats] = await pool.query(`
+      SELECT 
+        action,
+        COUNT(*) as count
+      FROM user_activity_logs
+      WHERE user_id = ?
+      GROUP BY action
+      ORDER BY count DESC
+      LIMIT 5
+    `, [req.user.id]);
+    
+    res.json({
+      ...stats[0],
+      top_actions: actionStats
+    });
+  } catch (error) {
+    console.error('Error fetching activity stats:', error);
+    res.status(500).json({ error: 'Failed to fetch activity statistics' });
+  }
+});
+
+// Get user activity logs (list route)
 router.get('/', authenticateToken, async (req, res) => {
   try {
     const { page = 1, limit = 20, action } = req.query;
@@ -52,41 +86,7 @@ router.get('/', authenticateToken, async (req, res) => {
   }
 });
 
-// Get activity statistics
-router.get('/stats', authenticateToken, async (req, res) => {
-  try {
-    const [stats] = await pool.query(`
-      SELECT 
-        COUNT(*) as total_actions,
-        COUNT(DISTINCT DATE(timestamp)) as active_days,
-        COUNT(DISTINCT action) as unique_actions,
-        MAX(timestamp) as last_activity
-      FROM user_activity_logs
-      WHERE user_id = ?
-    `, [req.user.id]);
-    
-    const [actionStats] = await pool.query(`
-      SELECT 
-        action,
-        COUNT(*) as count
-      FROM user_activity_logs
-      WHERE user_id = ?
-      GROUP BY action
-      ORDER BY count DESC
-      LIMIT 5
-    `, [req.user.id]);
-    
-    res.json({
-      ...stats[0],
-      top_actions: actionStats
-    });
-  } catch (error) {
-    console.error('Error fetching activity stats:', error);
-    res.status(500).json({ error: 'Failed to fetch activity statistics' });
-  }
-});
-
-// Get activity log details
+// Get activity log details (parameterized route)
 router.get('/:id', authenticateToken, async (req, res) => {
   try {
     const [log] = await pool.query(`
