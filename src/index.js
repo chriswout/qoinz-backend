@@ -12,7 +12,6 @@ const { connectDB, pool } = require('./config/database');
 
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
-const referralRoutes = require('./routes/referrals');
 const walletRoutes = require('./routes/wallet');
 const levelRoutes = require('./routes/level');
 const achievementRoutes = require('./routes/achievements');
@@ -179,7 +178,6 @@ app.get('/api/test', (req, res) => {
 // Routes: Feature endpoints
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/users', userRoutes);
-app.use('/api/v1/referrals', referralRoutes);
 app.use('/api/v1/wallet', walletRoutes);
 app.use('/api/v1/level', levelRoutes);
 app.use('/api/v1/achievements', achievementRoutes);
