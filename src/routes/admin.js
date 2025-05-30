@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { pool } = require('../config/database');
-const { verifyToken } = require('../middleware/auth');
+const { authenticateToken } = require('../middleware/auth');
 
 // Middleware to check if user is admin
 const isAdmin = async (req, res, next) => {
@@ -23,7 +23,7 @@ const isAdmin = async (req, res, next) => {
 };
 
 // Get all users
-router.get('/users', verifyToken, isAdmin, async (req, res) => {
+router.get('/users', authenticateToken, isAdmin, async (req, res) => {
     try {
         const [users] = await pool.query(
             'SELECT id, username, email, level, exp, table_slots, first_name, last_name, phone, qoinz_balance, created_at FROM users'
@@ -37,7 +37,7 @@ router.get('/users', verifyToken, isAdmin, async (req, res) => {
 });
 
 // Get user by ID
-router.get('/users/:id', verifyToken, isAdmin, async (req, res) => {
+router.get('/users/:id', authenticateToken, isAdmin, async (req, res) => {
     try {
         const [users] = await pool.query(
             'SELECT id, username, email, level, exp, table_slots, first_name, last_name, phone, qoinz_balance, created_at FROM users WHERE id = ?',
@@ -56,7 +56,7 @@ router.get('/users/:id', verifyToken, isAdmin, async (req, res) => {
 });
 
 // Update user
-router.put('/users/:id', verifyToken, isAdmin, async (req, res) => {
+router.put('/users/:id', authenticateToken, isAdmin, async (req, res) => {
     try {
         const { username, email, level, exp, table_slots, first_name, last_name, phone, qoinz_balance } = req.body;
 
@@ -86,7 +86,7 @@ router.put('/users/:id', verifyToken, isAdmin, async (req, res) => {
 });
 
 // Delete user
-router.delete('/users/:id', verifyToken, isAdmin, async (req, res) => {
+router.delete('/users/:id', authenticateToken, isAdmin, async (req, res) => {
     try {
         await pool.query('DELETE FROM users WHERE id = ?', [req.params.id]);
 
