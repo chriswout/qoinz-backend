@@ -18,12 +18,11 @@ RUN mkdir -p logs
 ENV PORT=3000
 ENV NODE_ENV=production
 
-# Expose both the app port and debug port
-EXPOSE 3000 9229
+EXPOSE 3000
 
 # Add healthcheck
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:3000/health || exit 1
 
-# Use debug mode with proper signal handling
-CMD ["node", "--inspect=0.0.0.0:9229", "--max-old-space-size=512", "src/index.js"] 
+# Use node directly with proper signal handling
+CMD ["node", "--max-old-space-size=512", "src/index.js"] 

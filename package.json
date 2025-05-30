@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "test": "jest",
+    "test": "jest --detectOpenHandles",
     "postinstall": "node -e \"try { require('fs').mkdirSync('./logs', { recursive: true }); } catch (e) {}\""
   },
   "dependencies": {
@@ -26,7 +26,8 @@
   },
   "devDependencies": {
     "nodemon": "^3.0.1",
-    "jest": "^29.7.0"
+    "jest": "^29.7.0",
+    "supertest": "^6.3.4"
   },
   "engines": {
     "node": ">=18.0.0"

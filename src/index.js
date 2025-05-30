@@ -18,7 +18,6 @@ const walletRoutes = require('./routes/wallet');
 const levelRoutes = require('./routes/level');
 const achievementRoutes = require('./routes/achievements');
 const adminRoutes = require('./routes/admin');
-const activityRoutes = require('./routes/activity');
 
 // Fallbacks
 process.env.NODE_ENV ||= 'production';
@@ -187,7 +186,6 @@ app.use('/api/v1/wallet', walletRoutes);
 app.use('/api/v1/level', levelRoutes);
 app.use('/api/v1/achievements', achievementRoutes);
 app.use('/api/v1/admin', adminRoutes);
-app.use('/api/v1/activity', activityRoutes);
 
 // Middleware: Error handlers
 app.use(errorHandler);

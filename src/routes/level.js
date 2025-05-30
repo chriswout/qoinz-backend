@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { pool } = require('../config/database');
-const { authenticateToken } = require('../middleware/auth');
+const { verifyToken } = require('../middleware/auth');
 
 // Get user's level and experience
-router.get('/', authenticateToken, async (req, res) => {
+router.get('/', verifyToken, async (req, res) => {
     try {
         const [users] = await pool.query(
             'SELECT level, exp FROM users WHERE id = ?',
@@ -22,10 +22,10 @@ router.get('/', authenticateToken, async (req, res) => {
     }
 });
 
-// Add experience to user
-router.post('/exp', authenticateToken, async (req, res) => {
+// Add experience to user and log in exp_log
+router.post('/exp', verifyToken, async (req, res) => {
     try {
-        const { amount } = req.body;
+        const { amount, source, source_id } = req.body;
 
         if (!amount || amount <= 0) {
             return res.status(400).json({ message: 'Invalid experience amount' });
@@ -56,6 +56,12 @@ router.post('/exp', authenticateToken, async (req, res) => {
             [newLevel, newExp, req.user.id]
         );
 
+        // Log EXP gain in exp_log
+        await pool.query(
+            'INSERT INTO exp_log (user_id, amount, source, source_id, created_at) VALUES (?, ?, ?, ?, NOW())',
+            [req.user.id, amount, source || 'admin', source_id || null]
+        );
+
         res.json({
             message: 'Experience added successfully',
             level: newLevel,
@@ -69,7 +75,7 @@ router.post('/exp', authenticateToken, async (req, res) => {
 });
 
 // Get level requirements
-router.get('/requirements', authenticateToken, async (req, res) => {
+router.get('/requirements', verifyToken, async (req, res) => {
     try {
         const [users] = await pool.query(
             'SELECT level, exp FROM users WHERE id = ?',

@@ -28,7 +28,13 @@ const pool = mysql.createPool({
     database: process.env.DB_NAME || 'qoinz',
     waitForConnections: true,
     connectionLimit: 10,
-    queueLimit: 0
+    queueLimit: 0,
+    enableKeepAlive: true,
+    keepAliveInitialDelay: 10000,
+    connectTimeout: 60000,
+    acquireTimeout: 60000,
+    timeout: 60000,
+    dateStrings: true
 });
 
 // Test database connection
@@ -50,6 +56,19 @@ const connectDB = async () => {
         
         connection.release();
         logger.info('Database connected successfully');
+
+        // Set up periodic connection check
+        setInterval(async () => {
+            try {
+                const conn = await pool.getConnection();
+                await conn.query('SELECT 1');
+                conn.release();
+            } catch (error) {
+                console.error('Database health check failed:', error);
+                logger.error('Database health check failed:', error);
+            }
+        }, 30000); // Check every 30 seconds
+
     } catch (error) {
         console.error('Database connection failed:', {
             message: error.message,
