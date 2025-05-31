@@ -97,4 +97,56 @@ router.delete('/users/:id', authenticateToken, isAdmin, async (req, res) => {
     }
 });
 
+// List all levels
+router.get('/levels', authenticateToken, isAdmin, async (req, res) => {
+    try {
+        const [levels] = await pool.query('SELECT * FROM level_rewards ORDER BY level ASC');
+        res.json(levels);
+    } catch (error) {
+        console.error('Get levels error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// Add a new level
+router.post('/levels', authenticateToken, isAdmin, async (req, res) => {
+    try {
+        const { level, label, exp_required, branch_slots, qoinz_reward, exp_reward, badge } = req.body;
+        await pool.query(
+            'INSERT INTO level_rewards (level, label, exp_required, branch_slots, qoinz_reward, exp_reward, badge) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            [level, label, exp_required, branch_slots, qoinz_reward, exp_reward, badge]
+        );
+        res.json({ message: 'Level added successfully' });
+    } catch (error) {
+        console.error('Add level error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// Edit a level
+router.put('/levels/:id', authenticateToken, isAdmin, async (req, res) => {
+    try {
+        const { level, label, exp_required, branch_slots, qoinz_reward, exp_reward, badge } = req.body;
+        await pool.query(
+            'UPDATE level_rewards SET level = ?, label = ?, exp_required = ?, branch_slots = ?, qoinz_reward = ?, exp_reward = ?, badge = ? WHERE id = ?',
+            [level, label, exp_required, branch_slots, qoinz_reward, exp_reward, badge, req.params.id]
+        );
+        res.json({ message: 'Level updated successfully' });
+    } catch (error) {
+        console.error('Update level error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// Delete a level
+router.delete('/levels/:id', authenticateToken, isAdmin, async (req, res) => {
+    try {
+        await pool.query('DELETE FROM level_rewards WHERE id = ?', [req.params.id]);
+        res.json({ message: 'Level deleted successfully' });
+    } catch (error) {
+        console.error('Delete level error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 module.exports = router; 
