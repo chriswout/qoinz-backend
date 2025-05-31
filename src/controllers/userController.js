@@ -4,6 +4,7 @@ const axios = require('axios');
 const FormData = require('form-data');
 const fs = require('fs');
 const path = require('path');
+const { pool } = require('../config/database');
 
 // Update user avatar
 exports.updateAvatar = async (req, res) => {
@@ -11,7 +12,7 @@ exports.updateAvatar = async (req, res) => {
   const userId = req.user.id; // Assuming req.user is set by auth middleware
 
   try {
-    const [result] = await db.query('UPDATE users SET avatar_url = ? WHERE id = ?', [avatar_url, userId]);
+    const [result] = await pool.query('UPDATE users SET avatar_url = ? WHERE id = ?', [avatar_url, userId]);
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -42,7 +43,7 @@ exports.uploadAvatar = async (req, res) => {
     });
 
     // Update user's avatar URL in database
-    const [result] = await db.query(
+    const [result] = await pool.query(
       'UPDATE users SET avatar_url = ? WHERE id = ?',
       [response.data.url, req.user.id]
     );

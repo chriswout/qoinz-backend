@@ -16,6 +16,7 @@ const walletRoutes = require('./routes/wallet');
 const levelRoutes = require('./routes/level');
 const achievementRoutes = require('./routes/achievements');
 const adminRoutes = require('./routes/admin');
+const avatarRoutes = require('./routes/userRoutes');
 
 // Fallbacks
 process.env.NODE_ENV ||= 'production';
@@ -178,6 +179,7 @@ app.get('/api/test', (req, res) => {
 // Routes: Feature endpoints
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/users', avatarRoutes);
 app.use('/api/v1/wallet', walletRoutes);
 app.use('/api/v1/level', levelRoutes);
 app.use('/api/v1/achievements', achievementRoutes);
