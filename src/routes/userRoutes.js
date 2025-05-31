@@ -38,8 +38,9 @@ if (!fs.existsSync(tempDir)) {
 }
 
 // Avatar upload route
-router.post('/avatar/upload', auth, (req, res, next) => {
-  upload.single('avatar')(req, res, (err) => {
+router.post('/avatar/upload', auth, function(req, res, next) {
+  const uploadMiddleware = upload.single('avatar');
+  uploadMiddleware(req, res, function(err) {
     if (err) {
       return res.status(400).json({ message: err.message });
     }
