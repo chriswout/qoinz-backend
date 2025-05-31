@@ -32,7 +32,10 @@ exports.uploadAvatar = async (req, res) => {
 
     // Create form data for image server
     const formData = new FormData();
-    formData.append('image', fs.createReadStream(req.file.path));
+    formData.append('image', req.file.buffer, {
+      filename: req.file.originalname,
+      contentType: req.file.mimetype
+    });
 
     // Upload to image server
     const imageServerResponse = await axios.post('https://images.qoinz.net/upload', formData, {
@@ -58,9 +61,6 @@ exports.uploadAvatar = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Clean up temporary file
-    fs.unlinkSync(req.file.path);
-
     res.json({
       message: 'Avatar uploaded successfully',
       avatar_url: imageUrl
@@ -68,15 +68,6 @@ exports.uploadAvatar = async (req, res) => {
   } catch (error) {
     console.error('Error uploading avatar:', error);
     
-    // Clean up temporary file if it exists
-    if (req.file && req.file.path) {
-      try {
-        fs.unlinkSync(req.file.path);
-      } catch (unlinkError) {
-        console.error('Error cleaning up temporary file:', unlinkError);
-      }
-    }
-
     res.status(500).json({
       message: 'Error uploading avatar',
       error: error.message
