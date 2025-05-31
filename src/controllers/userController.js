@@ -17,7 +17,9 @@ exports.updateAvatar = async (req, res) => {
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'User not found' });
     }
-    res.json({ message: 'Avatar updated successfully', avatar_url });
+    // Fetch and return the full updated user object
+    const [rows] = await pool.query('SELECT * FROM users WHERE id = ?', [userId]);
+    res.json(rows[0]);
   } catch (error) {
     console.error('Error updating avatar:', error);
     res.status(500).json({ message: 'Internal server error' });
@@ -63,13 +65,11 @@ exports.uploadAvatar = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    res.json({
-      message: 'Avatar uploaded successfully',
-      avatar_url: imageUrl
-    });
+    // Fetch and return the full updated user object
+    const [rows] = await pool.query('SELECT * FROM users WHERE id = ?', [req.user.id]);
+    res.json(rows[0]);
   } catch (error) {
     console.error('Error uploading avatar:', error);
-    
     res.status(500).json({
       message: 'Error uploading avatar',
       error: error.message

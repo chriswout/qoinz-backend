@@ -9,7 +9,7 @@ const { logUserActivity } = require('../middleware/activityLogger');
 router.get('/profile', authenticateToken, async (req, res) => {
     try {
         const [users] = await pool.query(
-            'SELECT id, username, email, level, exp, table_slots, first_name, last_name, phone, qoinz_balance, created_at FROM users WHERE id = ?',
+            'SELECT id, username, email, level, exp, table_slots, first_name, last_name, phone, qoinz_balance, created_at, avatar_url FROM users WHERE id = ?',
             [req.user.id]
         );
 
@@ -49,7 +49,7 @@ router.put('/profile', authenticateToken, logUserActivity('update_profile'), asy
 
         // Fetch and return the full updated user object
         const [users] = await pool.query(
-            'SELECT id, username, email, level, exp, table_slots, first_name, last_name, phone, qoinz_balance, created_at FROM users WHERE id = ?',
+            'SELECT id, username, email, level, exp, table_slots, first_name, last_name, phone, qoinz_balance, created_at, avatar_url FROM users WHERE id = ?',
             [req.user.id]
         );
         if (users.length === 0) {
