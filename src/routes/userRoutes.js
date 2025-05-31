@@ -1,6 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const { uploadAvatar, updateAvatar } = require('../controllers/userController');
+
+// Debug: Check what is being imported
+console.log('uploadAvatar:', uploadAvatar, 'Type:', typeof uploadAvatar);
+console.log('updateAvatar:', updateAvatar, 'Type:', typeof updateAvatar);
+
 const auth = require('../middleware/auth');
 const multer = require('multer');
 const path = require('path');
