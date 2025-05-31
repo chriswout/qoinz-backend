@@ -5,6 +5,7 @@ const FormData = require('form-data');
 const fs = require('fs');
 const path = require('path');
 const { pool } = require('../config/database');
+const { Readable } = require('stream');
 
 // Update user avatar
 exports.updateAvatar = async (req, res) => {
@@ -32,7 +33,8 @@ exports.uploadAvatar = async (req, res) => {
 
     // Create form data for image server
     const formData = new FormData();
-    formData.append('image', req.file.buffer, {
+    const stream = Readable.from(req.file.buffer);
+    formData.append('image', stream, {
       filename: req.file.originalname,
       contentType: req.file.mimetype
     });
