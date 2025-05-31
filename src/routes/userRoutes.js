@@ -37,13 +37,22 @@ if (!fs.existsSync(tempDir)) {
   fs.mkdirSync(tempDir, { recursive: true });
 }
 
+// File upload middleware
+const handleFileUpload = (req, res, next) => {
+  const uploadMiddleware = upload.single('avatar');
+  uploadMiddleware(req, res, (err) => {
+    if (err) {
+      return res.status(400).json({ message: err.message });
+    }
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+    next();
+  });
+};
+
 // Avatar upload route
-router.post('/avatar/upload', auth, upload.single('avatar'), (req, res, next) => {
-  if (!req.file) {
-    return res.status(400).json({ message: 'No file uploaded' });
-  }
-  next();
-}, uploadAvatar);
+router.post('/avatar/upload', auth, handleFileUpload, uploadAvatar);
 
 // Avatar URL update route
 router.post('/avatar/update', auth, updateAvatar);
