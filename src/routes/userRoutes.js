@@ -38,7 +38,14 @@ if (!fs.existsSync(tempDir)) {
 }
 
 // Avatar upload route
-router.post('/avatar/upload', auth, upload.single('avatar'), uploadAvatar);
+router.post('/avatar/upload', auth, (req, res, next) => {
+  upload.single('avatar')(req, res, (err) => {
+    if (err) {
+      return res.status(400).json({ message: err.message });
+    }
+    next();
+  });
+}, uploadAvatar);
 
 // Avatar URL update route
 router.post('/avatar/update', auth, updateAvatar);
