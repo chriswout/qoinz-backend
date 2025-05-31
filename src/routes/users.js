@@ -128,4 +128,18 @@ router.post('/change-password', authenticateToken, logUserActivity('change_passw
     }
 });
 
+// Get user activity log
+router.get('/activity_log', authenticateToken, async (req, res) => {
+    try {
+        const [logs] = await pool.query(
+            'SELECT id, action, timestamp, ip_address, country, city, isp, user_agent, referrer, details FROM user_activity_logs WHERE user_id = ? ORDER BY timestamp DESC LIMIT 20',
+            [req.user.id]
+        );
+        res.json(logs);
+    } catch (error) {
+        console.error('Get activity log error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 module.exports = router; 
