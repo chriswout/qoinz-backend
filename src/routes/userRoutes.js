@@ -6,7 +6,7 @@ const { uploadAvatar, updateAvatar } = require('../controllers/userController');
 console.log('uploadAvatar:', uploadAvatar, 'Type:', typeof uploadAvatar);
 console.log('updateAvatar:', updateAvatar, 'Type:', typeof updateAvatar);
 
-const auth = require('../middleware/auth');
+const { authenticateToken } = require('../middleware/auth');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
@@ -42,9 +42,9 @@ const upload = multer({
 });
 
 // Avatar upload route
-router.post('/avatar/upload', auth, upload.single('avatar'), uploadAvatar);
+router.post('/avatar/upload', authenticateToken, upload.single('avatar'), uploadAvatar);
 
 // Avatar URL update route
-router.post('/avatar/update', auth, updateAvatar);
+router.post('/avatar/update', authenticateToken, updateAvatar);
 
 module.exports = router; 
