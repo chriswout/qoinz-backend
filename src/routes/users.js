@@ -47,7 +47,15 @@ router.put('/profile', authenticateToken, logUserActivity('update_profile'), asy
             [username, email, first_name, last_name, phone, req.user.id]
         );
 
-        res.json({ message: 'Profile updated successfully' });
+        // Fetch and return the full updated user object
+        const [users] = await pool.query(
+            'SELECT id, username, email, level, exp, table_slots, first_name, last_name, phone, qoinz_balance, created_at FROM users WHERE id = ?',
+            [req.user.id]
+        );
+        if (users.length === 0) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.json(users[0]);
     } catch (error) {
         console.error('Update profile error:', error);
         res.status(500).json({ message: 'Server error' });
