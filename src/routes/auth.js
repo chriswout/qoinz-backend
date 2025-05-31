@@ -211,6 +211,7 @@ router.post('/login', loginValidation, logUserActivity('login'), async (req, res
 });
 
 // Refresh token route
+// Always returns { token, refresh_token } for frontend compatibility
 router.post('/refresh', refreshTokenValidation, async (req, res) => {
     try {
         const { refresh_token } = req.body;
@@ -237,7 +238,7 @@ router.post('/refresh', refreshTokenValidation, async (req, res) => {
         await storeRefreshToken(token.user_id, refreshToken, refreshTokenExpiry);
 
         res.json({
-            token: accessToken,
+            token: accessToken, // <-- always 'token'
             refresh_token: refreshToken
         });
     } catch (error) {
