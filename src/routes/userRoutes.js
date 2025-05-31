@@ -38,14 +38,11 @@ if (!fs.existsSync(tempDir)) {
 }
 
 // Avatar upload route
-router.post('/avatar/upload', auth, function(req, res, next) {
-  const uploadMiddleware = upload.single('avatar');
-  uploadMiddleware(req, res, function(err) {
-    if (err) {
-      return res.status(400).json({ message: err.message });
-    }
-    next();
-  });
+router.post('/avatar/upload', auth, upload.single('avatar'), (req, res, next) => {
+  if (!req.file) {
+    return res.status(400).json({ message: 'No file uploaded' });
+  }
+  next();
 }, uploadAvatar);
 
 // Avatar URL update route
