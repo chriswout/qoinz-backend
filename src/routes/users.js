@@ -128,12 +128,24 @@ router.post('/change-password', authenticateToken, logUserActivity('change_passw
     }
 });
 
-// Get user activity log
+// Get user activity log with filtering and pagination
 router.get('/activity_log', authenticateToken, async (req, res) => {
     try {
+        let { action, limit, offset } = req.query;
+        limit = Math.min(parseInt(limit) || 10, 50);
+        offset = parseInt(offset) || 0;
+        let where = 'user_id = ?';
+        let params = [req.user.id];
+        if (action === 'login') {
+            where += ' AND action = ?';
+            params.push('login');
+        } else if (action === '!login') {
+            where += ' AND action != ?';
+            params.push('login');
+        }
         const [logs] = await pool.query(
-            'SELECT id, action, timestamp, ip_address, country, city, isp, user_agent, referrer, details FROM user_activity_logs WHERE user_id = ? ORDER BY timestamp DESC LIMIT 20',
-            [req.user.id]
+            `SELECT id, action, timestamp, ip_address, country, city, isp, user_agent, referrer, details FROM user_activity_logs WHERE ${where} ORDER BY timestamp DESC LIMIT ? OFFSET ?`,
+            [...params, limit, offset]
         );
         res.json(logs);
     } catch (error) {
