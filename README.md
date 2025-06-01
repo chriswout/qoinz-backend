@@ -575,8 +575,8 @@ This document lists all backend endpoints and their JSON outputs, strictly match
 
 # Changelog / Notes
 
-- **2024-06-08**: Added Shop endpoints (`/api/v1/shop/items`, `/api/v1/shop/buy`, `/api/v1/shop/inventory`) and Voucher endpoints (`/api/v1/vouchers/create`, `/api/v1/vouchers/redeem`, `/api/v1/vouchers/my`).
-- **2024-06-08**: Documented planned admin endpoints for shop and voucher management.
+- **2025-06-01**: Added Shop endpoints (`/api/v1/shop/items`, `/api/v1/shop/buy`, `/api/v1/shop/inventory`) and Voucher endpoints (`/api/v1/vouchers/create`, `/api/v1/vouchers/redeem`, `/api/v1/vouchers/my`).
+- **2025-06-01**: Documented planned admin endpoints for shop and voucher management.
 - Shop system supports direct purchase, inventory, and wallet integration.
 - Voucher system supports creation, redemption, inviter bonuses, and wallet integration.
 - All new endpoints require authentication and follow the same JSON response conventions as the rest of the API.
